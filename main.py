@@ -7,7 +7,8 @@ all_books = []
 
 @app.route('/')
 def home():
-    return render_template('index.html')
+    print(all_books)
+    return render_template('index.html', library=all_books)
 
 
 @app.route("/add", methods=['POST', 'GET'])
