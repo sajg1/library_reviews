@@ -40,9 +40,8 @@ def add():
                        rating=request.form['rating'])
         db.session.add(newBook)
         db.session.commit()
-        return render_template('add.html')
-    else:
-        return render_template('add.html')
+        return redirect(url_for('home'))
+    return render_template('add.html')
 
 
 if __name__ == "__main__":
