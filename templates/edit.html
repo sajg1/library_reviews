@@ -5,10 +5,10 @@
     <title>Edit Rating</title>
 </head>
 <body>
-    <ul>
-        <li>Book Name: {{book.title}}</li>
-        <li>Current Rating: {{book.rating}}</li>
-        <input type="text"><input type="submit">
-    </ul>
+    <form action="{{ url_for('edit_rating', id=book.id)}}" method="post">
+        <p>Book Name: {{book.title}}</p>
+        <p>Current Rating: {{book.rating}}</p>
+        <input name="new-rating" type="text"><button type="submit">Change Rating</button>
+    </form>
 </body>
 </html>

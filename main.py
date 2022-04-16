@@ -48,6 +48,9 @@ def edit_rating(id):
     book = Book.query.get(id)
     if request.method == 'GET':
         return render_template('edit.html', book=book)
+    book.rating = request.form['new-rating']
+    db.session.commit()
+    return redirect(url_for('home'))
 
 
 if __name__ == "__main__":
