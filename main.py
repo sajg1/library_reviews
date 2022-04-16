@@ -26,7 +26,6 @@ class Book(db.Model):
 def home():
     all_books = db.session.query(Book).all()
     if len(all_books) > 0:
-        print(all_books)
         return render_template('index.html', library=all_books, empty=False)
     else:
         return render_template('index.html', empty=True)
@@ -42,6 +41,13 @@ def add():
         db.session.commit()
         return redirect(url_for('home'))
     return render_template('add.html')
+
+
+@app.route("/edit/<id>", methods=['POST', 'GET'])
+def edit_rating(id):
+    book = Book.query.get(id)
+    if request.method == 'GET':
+        return render_template('edit.html', book=book)
 
 
 if __name__ == "__main__":
