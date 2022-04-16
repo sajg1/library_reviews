@@ -1,26 +1,45 @@
 from flask import Flask, render_template, request, redirect, url_for
+from flask_sqlalchemy import SQLAlchemy
+
 
 app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///library-reviews.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+db = SQLAlchemy(app)
 
-all_books = []
+
+# SQLAlchemy class for book table
+class Book(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(250), unique=True, nullable=True)
+    author = db.Column(db.String(250), nullable=True)
+    rating = db.Column(db.Float, nullable=True)
+
+    def __repr__(self):
+        return f"<Book {self.title} >"
+
+# used initially to create the database
+# db.create_all()
 
 
 @app.route('/')
 def home():
-    print(all_books)
-    return render_template('index.html', library=all_books)
+    all_books = db.session.query(Book).all()
+    if len(all_books) > 0:
+        print(all_books)
+        return render_template('index.html', library=all_books, empty=False)
+    else:
+        return render_template('index.html', empty=True)
 
 
 @app.route("/add", methods=['POST', 'GET'])
 def add():
     if request.method == 'POST':
-        newBook = {
-            "title": request.form['title'],
-            "author": request.form['author'],
-            "rating": request.form['rating']
-        }
-        all_books.append(newBook)
-        print(all_books)
+        newBook = Book(title=request.form['title'],
+                       author=request.form['author'],
+                       rating=request.form['rating'])
+        db.session.add(newBook)
+        db.session.commit()
         return render_template('add.html')
     else:
         return render_template('add.html')
